@@ -563,41 +563,55 @@
             const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
 
             // Open mobile menu
-            mobileMenuBtn.addEventListener('click', function() {
-                mobileMenu.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenu) {
+                        mobileMenu.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
 
             // Close mobile menu
-            closeMobileMenu.addEventListener('click', function() {
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            });
+            if (closeMobileMenu) {
+                closeMobileMenu.addEventListener('click', function() {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
 
             // Close mobile menu when clicking outside
-            mobileMenu.addEventListener('click', function(e) {
-                if (e.target === mobileMenu) {
-                    mobileMenu.classList.remove('active');
-                    document.body.style.overflow = 'auto';
-                }
-            });
+            if (mobileMenu) {
+                mobileMenu.addEventListener('click', function(e) {
+                    if (e.target === mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
 
             // Mobile dark mode toggle
-            mobileDarkModeToggle.addEventListener('click', function() {
-                const html = document.documentElement;
-                html.classList.toggle('dark');
-                const theme = html.classList.contains('dark') ? 'dark' : 'light';
-                localStorage.setItem('theme', theme);
-            });
+            if (mobileDarkModeToggle) {
+                mobileDarkModeToggle.addEventListener('click', function() {
+                    const html = document.documentElement;
+                    html.classList.toggle('dark');
+                    const theme = html.classList.contains('dark') ? 'dark' : 'light';
+                    localStorage.setItem('theme', theme);
+                });
+            }
 
             // Close mobile menu when clicking on links
-            const mobileLinks = mobileMenu.querySelectorAll('a');
-            mobileLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    mobileMenu.classList.remove('active');
-                    document.body.style.overflow = 'auto';
+            if (mobileMenu) {
+                const mobileLinks = mobileMenu.querySelectorAll('a');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    });
                 });
-            });
+            }
 
             // Filter functionality
             filterBtns.forEach(btn => {

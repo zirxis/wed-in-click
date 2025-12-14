@@ -256,15 +256,47 @@
             const closeMobileMenu = document.getElementById('closeMobileMenu');
             const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
 
-            mobileMenuBtn.addEventListener('click', function() {
-                mobileMenu.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
 
-            closeMobileMenu.addEventListener('click', function() {
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            });
+            if (closeMobileMenu && mobileMenu) {
+                closeMobileMenu.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            if (mobileMenu) {
+                mobileMenu.addEventListener('click', function(e) {
+                    if (e.target === mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+
+            if (mobileDarkModeToggle) {
+                mobileDarkModeToggle.addEventListener('click', function() {
+                    const html = document.documentElement;
+                    html.classList.toggle('dark');
+                    const theme = html.classList.contains('dark') ? 'dark' : 'light';
+                    localStorage.setItem('theme', theme);
+                });
+            }
+
+            if (mobileMenu) {
+                const mobileLinks = mobileMenu.querySelectorAll('a');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    });
+                });
+            }
 
             // Load bookings
             function loadBookings() {
