@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>حجوزاتي - Wed in Click</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#87D8C3',
+                        secondary: '#EE4B4E',
+                        dark: '#1a1a1a',
+                        'dark-light': '#2d2d2d',
+                        'dark-lighter': '#3d3d3d'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #87D8C3 0%, #EE4B4E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .booking-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .booking-card {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(135, 216, 195, 0.3);
+        }
+        .booking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .dark .booking-card:hover {
+            box-shadow: 0 10px 30px rgba(135, 216, 195, 0.2);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        .status-confirmed {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        .status-completed {
+            background: #DCFCE7;
+            color: #166534;
+        }
+        .status-cancelled {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(135, 216, 195, 0.1) 0%, rgba(238, 75, 78, 0.1) 100%);
+        }
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        .stat-box {
+            background: rgba(135, 216, 195, 0.1);
+            border: 1px solid rgba(135, 216, 195, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .dark .stat-box {
+            background: rgba(45, 45, 45, 0.8);
+            border-color: rgba(135, 216, 195, 0.5);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-dark text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/95 dark:bg-dark/95 backdrop-blur-md z-50 border-b border-primary/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="flex items-center group">
+                    <div class="relative">
+                        <img src="logo.jpg" alt="Wed in Click" class="h-14 w-auto transition-transform duration-300 group-hover:scale-110 filter brightness-100 group-hover:brightness-110">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-20 rounded-lg transition-opacity duration-300"></div>
+                    </div>
+                </a>
+                
+                <div class="hidden md:flex items-center space-x-4">
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-dark-lighter hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    <button class="profile-btn bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
+                        <i class="fas fa-user ml-2"></i><span class="auth-username">المستخدم</span>
+                    </button>
+                </div>
+
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-64 h-full bg-white dark:bg-dark-light shadow-lg z-40 md:hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold">القائمة</h3>
+                    <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="space-y-3 mb-6">
+                    <a href="index.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-home ml-3"></i>الرئيسية
+                    </a>
+                    <a href="services.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-concierge-bell ml-3"></i>الخدمات
+                    </a>
+                    <a href="bookings.html" class="block px-4 py-3 rounded-lg bg-primary text-white">
+                        <i class="fas fa-calendar-check ml-3"></i>حجوزاتي
+                    </a>
+                </nav>
+
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <button id="mobileDarkModeToggle" class="w-full p-2 rounded-lg bg-gray-200 dark:bg-gray-700">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <button class="profile-btn w-full bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
+                        <i class="fas fa-user ml-2"></i><span class="auth-username">المستخدم</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gradient">حجوزاتي</h1>
+            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400">
+                إدارة ومتابعة جميع حجوزات زفافك في مكان واحد
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Statistics -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                <div class="stat-box">
+                    <div class="text-3xl font-bold text-primary mb-2" id="totalBookings">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">إجمالي الحجوزات</div>
+                </div>
+                <div class="stat-box">
+                    <div class="text-3xl font-bold text-yellow-500 mb-2" id="pendingBookings">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">قيد الانتظار</div>
+                </div>
+                <div class="stat-box">
+                    <div class="text-3xl font-bold text-blue-500 mb-2" id="confirmedBookings">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">مؤكدة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="text-3xl font-bold text-green-500 mb-2" id="completedBookings">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">مكتملة</div>
+                </div>
+            </div>
+
+            <!-- Bookings List -->
+            <div id="bookingsContainer" class="space-y-6">
+                <!-- Bookings will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state">
+                <i class="fas fa-inbox text-6xl text-gray-400 mb-4"></i>
+                <h3 class="text-2xl font-bold mb-2">لا توجد حجوزات بعد</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">ابدأي بحجز خدماتك الآن لجعل يومك الكبير حقيقة!</p>
+                <a href="services.html" class="inline-block bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
+                    <i class="fas fa-calendar-plus ml-2"></i>حجز خدمة الآن
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-primary to-secondary relative overflow-hidden">
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">هل تريدين إضافة خدمات أخرى؟</h2>
+            <p class="text-lg md:text-xl text-white/95 mb-8 leading-relaxed">
+                اكتشفي المزيد من خدمات الأعراس والضيوف الخاصة بك من منصتنا الشاملة.
+            </p>
+            <a href="services.html" class="inline-block bg-white text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300">
+                <i class="fas fa-arrow-left ml-2"></i>عودة إلى الخدمات
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark dark:bg-dark-light text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 Wed in Click. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const user = window.auth.current();
+            if (!user) {
+                window.location.href = 'welcome.html';
+                return;
+            }
+
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
+
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            closeMobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Load bookings
+            function loadBookings() {
+                const bookings = window.booking.getUserBookings();
+                const container = document.getElementById('bookingsContainer');
+                const emptyState = document.getElementById('emptyState');
+
+                // Update statistics
+                const stats = window.booking.getStats();
+                document.getElementById('totalBookings').textContent = stats.total;
+                document.getElementById('pendingBookings').textContent = stats.pending;
+                document.getElementById('confirmedBookings').textContent = stats.confirmed;
+                document.getElementById('completedBookings').textContent = stats.completed;
+
+                if (bookings.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+
+                container.innerHTML = bookings.map(booking => {
+                    const eventDate = new Date(booking.eventDate);
+                    const formattedDate = eventDate.toLocaleDateString('ar-EG', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    const statusText = {
+                        pending: 'قيد الانتظار',
+                        confirmed: 'مؤكدة',
+                        completed: 'مكتملة',
+                        cancelled: 'ملغاة'
+                    }[booking.status];
+
+                    return `
+                        <div class="booking-card rounded-2xl p-6">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold mb-2">${booking.serviceName}</h3>
+                                    <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                        <div>
+                                            <i class="fas fa-calendar-alt ml-2"></i>
+                                            <span>${formattedDate}</span>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-clock ml-2"></i>
+                                            <span>${booking.eventTime}</span>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-users ml-2"></i>
+                                            <span>${booking.guestCount} ضيف</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-${booking.status}">${statusText}</span>
+                            </div>
+
+                            ${booking.specialRequests ? `
+                                <div class="bg-gray-100 dark:bg-dark-lighter p-3 rounded-lg mb-4">
+                                    <p class="text-sm"><strong>متطلبات خاصة:</strong> ${booking.specialRequests}</p>
+                                </div>
+                            ` : ''}
+
+                            ${booking.budget ? `
+                                <div class="mb-4 text-lg font-semibold">
+                                    الميزانية: <span class="text-primary">${booking.budget.toLocaleString()} دج</span>
+                                </div>
+                            ` : ''}
+
+                            <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                ${booking.status === 'pending' ? `
+                                    <button onclick="confirmBooking(${booking.id})" class="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm font-semibold">
+                                        <i class="fas fa-check ml-1"></i>تأكيد
+                                    </button>
+                                    <button onclick="deleteBooking(${booking.id})" class="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold">
+                                        <i class="fas fa-trash ml-1"></i>حذف
+                                    </button>
+                                ` : booking.status === 'confirmed' ? `
+                                    <button onclick="cancelBooking(${booking.id})" class="flex-1 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors text-sm font-semibold">
+                                        <i class="fas fa-times ml-1"></i>إلغاء
+                                    </button>
+                                ` : `
+                                    <button onclick="deleteBooking(${booking.id})" class="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold">
+                                        <i class="fas fa-trash ml-1"></i>حذف
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Animate cards
+                const cards = container.querySelectorAll('.booking-card');
+                cards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    anime({
+                        targets: card,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        delay: index * 100,
+                        easing: 'easeOutQuart'
+                    });
+                });
+            }
+
+            // Load bookings on page load
+            loadBookings();
+
+            // Make functions available globally
+            window.confirmBooking = function(bookingId) {
+                const result = window.booking.confirmBooking(bookingId);
+                showNotification(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadBookings();
+                }
+            };
+
+            window.cancelBooking = function(bookingId) {
+                if (confirm('هل تتأكدين من إلغاء هذا الحجز؟')) {
+                    const result = window.booking.cancelBooking(bookingId);
+                    showNotification(result.message, result.success ? 'success' : 'error');
+                    if (result.success) {
+                        loadBookings();
+                    }
+                }
+            };
+
+            window.deleteBooking = function(bookingId) {
+                if (confirm('هل تتأكدين من حذف هذا الحجز؟')) {
+                    const result = window.booking.deleteBooking(bookingId);
+                    showNotification(result.message, result.success ? 'success' : 'error');
+                    if (result.success) {
+                        loadBookings();
+                    }
+                }
+            };
+        });
+    </script>
+</body>
+</html>

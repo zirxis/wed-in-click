@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>خدماتنا - Wed in Click</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#87D8C3',
+                        secondary: '#EE4B4E',
+                        dark: '#1a1a1a',
+                        'dark-light': '#2d2d2d',
+                        'dark-lighter': '#3d3d3d'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #87D8C3 0%, #EE4B4E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .service-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .service-card {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(135, 216, 195, 0.3);
+        }
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .dark .service-card:hover {
+            box-shadow: 0 10px 30px rgba(135, 216, 195, 0.2);
+        }
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #87D8C3 0%, #EE4B4E 100%);
+            color: white;
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(135, 216, 195, 0.1) 0%, rgba(238, 75, 78, 0.1) 100%);
+        }
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        .service-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+        .service-detail-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        .dark .modal-content {
+            background: #2d2d2d;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-dark text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/95 dark:bg-dark/95 backdrop-blur-md z-50 border-b border-primary/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="flex items-center group">
+                        <div class="relative">
+                            <img src="logo.jpg" alt="Wed in Click" class="h-14 w-auto transition-transform duration-300 group-hover:scale-110 filter brightness-100 group-hover:brightness-110">
+                            <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-20 rounded-lg transition-opacity duration-300"></div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link hover:text-primary transition-colors">الرئيسية</a>
+                    <a href="services.html" class="nav-link text-primary">الخدمات</a>
+                    <a href="search.html" class="nav-link hover:text-primary transition-colors">البحث</a>
+                    <a href="bookings.html" class="nav-link hover:text-primary transition-colors">حجوزاتي</a>
+                    <a href="index.html#about" class="nav-link hover:text-primary transition-colors">عن المنصة</a>
+                    <a href="index.html#contact" class="nav-link hover:text-primary transition-colors">اتصل بنا</a>
+                </div>
+
+                <!-- Desktop Controls -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="language-selector flex space-x-2">
+                        <button class="lang-btn active px-2 py-1 rounded text-sm bg-primary text-white" data-lang="ar">AR</button>
+                        <button class="lang-btn px-2 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="fr">FR</button>
+                        <button class="lang-btn px-2 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="en">EN</button>
+                    </div>
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-dark-lighter hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
+                        تسجيل الدخول
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-64 h-full bg-white dark:bg-dark-light shadow-lg z-40 md:hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold">القائمة</h3>
+                    <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="space-y-3 mb-6">
+                    <a href="index.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-home ml-3"></i>الرئيسية
+                    </a>
+                    <a href="services.html" class="block px-4 py-3 rounded-lg bg-primary text-white">
+                        <i class="fas fa-concierge-bell ml-3"></i>الخدمات
+                    </a>
+                    <a href="search.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-search ml-3"></i>البحث
+                    </a>
+                    <a href="bookings.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-calendar-check ml-3"></i>حجوزاتي
+                    </a>
+                    <a href="index.html#about" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-info-circle ml-3"></i>عن المنصة
+                    </a>
+                    <a href="index.html#contact" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-phone ml-3"></i>اتصل بنا
+                    </a>
+                </nav>
+
+                <!-- Mobile Language Selector -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <p class="text-sm font-semibold mb-3">اللغة</p>
+                    <div class="flex space-x-2">
+                        <button class="lang-btn active px-3 py-2 rounded text-sm bg-primary text-white flex-1" data-lang="ar">AR</button>
+                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="fr">FR</button>
+                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="en">EN</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Dark Mode Toggle -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-semibold">الوضع المظلم</span>
+                        <button id="mobileDarkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Login Button -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <button class="w-full bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
+                        تسجيل الدخول
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">جميع خدمات زفافك في مكان واحد</h1>
+            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                اكتشفي مجموعة واسعة من خدمات الأعراس المقدمة من أفضل المحترفين في الجزائر. 
+                من القاعات إلى التصوير، من الماكياج إلى الديكور - كل ما تحتاجينه ليومك الكبير.
+            </p>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="py-6 bg-white dark:bg-dark-light border-b border-gray-200 dark:border-gray-700 sticky top-16 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-3">
+                <button class="filter-btn active px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-primary text-sm transition-all" data-filter="all">
+                    جميع الخدمات
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-primary text-sm transition-all" data-filter="venues">
+                    القاعات
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-primary text-sm transition-all" data-filter="catering">
+                    الطعام
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-primary text-sm transition-all" data-filter="beauty">
+                    الجمال
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-primary text-sm transition-all" data-filter="photography">
+                    التصوير
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-primary text-sm transition-all" data-filter="decoration">
+                    الديكور
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-primary text-sm transition-all" data-filter="jewelry">
+                    المجوهرات
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid">
+                
+                <!-- Wedding Halls -->
+                <div class="service-card rounded-2xl p-6 cursor-pointer" data-category="venues" onclick="openServiceModal('venues')">
+                    <div class="relative mb-4">
+                        <img src="قاعة الأفراح الذهبية.png" alt="قاعة الأفراح الذهبية" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl"></div>
+                        <div class="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            الأكثر طلباً
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                            4.8 ⭐ (127)
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">قاعة الأفراح الذهبية</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">قاعة فاخرة بسعة 500 ضيف مع ديكورات حديثة</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-users text-primary text-sm"></i>
+                            <span class="text-sm">500 ضيف</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-secondary text-sm"></i>
+                            <span class="text-sm">الجزائر العاصمة</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-primary">750,000 دج</span>
+                        <button onclick="showBookingModal('venues', 'قاعة الأفراح الذهبية', '750,000 دج')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                            احجز الآن
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Catering -->
+                <div class="service-card rounded-2xl p-6 cursor-pointer" data-category="catering" onclick="openServiceModal('catering')">
+                    <div class="relative mb-4">
+                        <img src="مطعم الأطايب الملكية.png" alt="مطعم الأطايب الملكية" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl"></div>
+                        <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            مميز
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                            4.9 ⭐ (89)
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">مطعم الأطايب الملكية</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">خدمات تقديم طعام لجميع أنواع الحفلات</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-utensils text-secondary text-sm"></i>
+                            <span class="text-sm">أطباق متنوعة</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-primary text-sm"></i>
+                            <span class="text-sm">وهران</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-secondary">400,000 دج</span>
+                        <button onclick="showBookingModal('catering', 'مطعم الأطايب الملكية', '400,000 دج')" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                            احجز الآن
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Beauty Services -->
+                <div class="service-card rounded-2xl p-6 cursor-pointer" data-category="beauty" onclick="openServiceModal('beauty')">
+                    <div class="relative mb-4">
+                        <img src="صالون الجمال الملكي.png" alt="صالون الجمال الملكي" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl"></div>
+                        <div class="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            احترافي
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                            4.7 ⭐ (156)
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">صالون الجمال الملكي</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">ماكياج عروس احترافي مع تسريحة شعر</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-magic text-primary text-sm"></i>
+                            <span class="text-sm">خبراء متخصصون</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-secondary text-sm"></i>
+                            <span class="text-sm">قسنطينة</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-primary">120,000 دج</span>
+                        <button onclick="showBookingModal('beauty', 'صالون الجمال الملكي', '120,000 دج')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                            احجز الآن
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Photography -->
+                <div class="service-card rounded-2xl p-6 cursor-pointer" data-category="photography" onclick="openServiceModal('photography')">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-camera text-6xl text-secondary"></i>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            مضمون
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                            4.9 ⭐ (203)
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">استوديو فوتوغرافيا الأحلام</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">تصوير زفاف احترافي مع فيديو 4K</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-video text-secondary text-sm"></i>
+                            <span class="text-sm">فيديو 4K</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-primary text-sm"></i>
+                            <span class="text-sm">عنابة</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-secondary">200,000 دج</span>
+                        <button onclick="showBookingModal('photography', 'استوديو فوتوغرافيا الأحلام', '200,000 دج')" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                            احجز الآن
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Decoration -->
+                <div class="service-card rounded-2xl p-6 cursor-pointer" data-category="decoration" onclick="openServiceModal('decoration')">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-sparkles text-6xl text-primary"></i>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            مبدع
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                            4.8 ⭐ (94)
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">ديكورات الأحلام الساحرة</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">ديكورات زفاف فاخرة مع إضاءة ساحرة</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-flower text-primary text-sm"></i>
+                            <span class="text-sm">ديكورات مبتكرة</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-secondary text-sm"></i>
+                            <span class="text-sm">البليدة</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-primary">300,000 دج</span>
+                        <button onclick="showBookingModal('decoration', 'ديكورات الأحلام الساحرة', '300,000 دج')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                            احجز الآن
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Jewelry -->
+                <div class="service-card rounded-2xl p-6 cursor-pointer" data-category="jewelry" onclick="openServiceModal('jewelry')">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-gem text-6xl text-secondary"></i>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            فاخر
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                            4.9 ⭐ (67)
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">مجوهرات الألماس الملكي</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">مجوهرات زفاف أصلية بتصاميم فاخرة</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-ring text-secondary text-sm"></i>
+                            <span class="text-sm">ألماس أصلي</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-primary text-sm"></i>
+                            <span class="text-sm">سطيف</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-secondary">500,000 دج</span>
+                        <button onclick="showBookingModal('jewelry', 'مجوهرات الألماس الملكي', '500,000 دج')" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                            احجز الآن
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-12">
+                <button id="loadMoreBtn" class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                    عرض المزيد من الخدمات
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Detail Modal -->
+    <div id="serviceModal" class="service-detail-modal">
+        <div class="modal-content p-6 m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modalTitle" class="text-2xl font-bold text-gradient">تفاصيل الخدمة</h3>
+                <button id="closeModal" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="modalContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <section class="py-20 hero-gradient relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-40 h-40 bg-white rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+            <div class="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"></div>
+        </div>
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">مستعدة لحجز خدماتك؟</h2>
+            <p class="text-lg md:text-xl text-white/95 mb-8 leading-relaxed">
+                لا تنتظرين أكثر! ابدئي في حجز خدمات زفافك الآن واستفيدي من عروضنا الحصرية. 
+                كلما بدأت مبكراً، حصلتِ على أفضل الأسعار والخدمات.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300">
+                    ابدئي الحجز الآن
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-primary transition-all duration-300">
+                    تواصلي معنا
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark dark:bg-dark-light text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="index.html" class="inline-block mb-4 group">
+                        <img src="logo.jpg" alt="Wed in Click" class="h-14 w-auto transition-transform duration-300 group-hover:scale-110 filter brightness-100 group-hover:brightness-125 drop-shadow-lg">
+                    </a>
+                    <p class="text-gray-400 leading-relaxed">
+                        منصتك الشاملة لجميع خدمات الأعراس في الجزائر. نجعل من يومك الكبير حلمًا يتحقق.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">الخدمات</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">قاعات الأفراح</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الطعام والمشروبات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">التصوير والفيديو</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الديكور والزهور</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">للعرسان</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">إنشاء حساب</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">تصفح الخدمات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">مقارنة الأسعار</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الحجز والدفع</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">لمقدمي الخدمات</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">التسجيل كمزود</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">إدارة الحجوزات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الترويج</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الإحصائيات</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Wed in Click. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Services page specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const serviceCards = document.querySelectorAll('.service-card');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const serviceModal = document.getElementById('serviceModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
+
+            // Open mobile menu
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Close mobile menu
+            closeMobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close mobile menu when clicking outside
+            mobileMenu.addEventListener('click', function(e) {
+                if (e.target === mobileMenu) {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Mobile dark mode toggle
+            mobileDarkModeToggle.addEventListener('click', function() {
+                const html = document.documentElement;
+                html.classList.toggle('dark');
+                const theme = html.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+            });
+
+            // Close mobile menu when clicking on links
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+
+            // Filter functionality
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.dataset.filter;
+                    
+                    // Filter cards
+                    serviceCards.forEach(card => {
+                        if (filter === 'all' || card.dataset.category === filter) {
+                            card.style.display = 'block';
+                            anime({
+                                targets: card,
+                                opacity: [0, 1],
+                                translateY: [20, 0],
+                                duration: 500,
+                                easing: 'easeOutQuart'
+                            });
+                        } else {
+                            anime({
+                                targets: card,
+                                opacity: [1, 0],
+                                translateY: [0, -20],
+                                duration: 300,
+                                easing: 'easeInQuart',
+                                complete: () => {
+                                    card.style.display = 'none';
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
+            // Load more functionality
+            loadMoreBtn.addEventListener('click', function() {
+                showNotification('قريباً! سيتم إضافة المزيد من الخدمات.', 'info');
+                
+                // Animate button
+                anime({
+                    targets: this,
+                    scale: [1, 0.95, 1],
+                    duration: 200,
+                    easing: 'easeOutQuart'
+                });
+            });
+
+            // Service modal functionality
+            function openServiceModal(serviceType) {
+                const serviceData = {
+                    venues: {
+                        title: 'قاعة الأفراح الذهبية',
+                        content: `
+                            <div class="space-y-4">
+                                <img src="قاعة الأفراح الذهبية.png" alt="قاعة الأفراح" class="w-full h-48 object-cover rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-bold mb-2">المميزات:</h4>
+                                        <ul class="space-y-1 text-sm">
+                                            <li>✓ سعة حتى 500 ضيف</li>
+                                            <li>✓ ديكورات حديثة و فاخرة</li>
+                                            <li>✓ إضاءة ساحرة</li>
+                                            <li>✓ موقف سيارات واسع</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold mb-2">الأسعار:</h4>
+                                        <p class="text-2xl font-bold text-primary mb-2">750,000 دج</p>
+                                        <p class="text-sm text-gray-600">يشمل: القاعة، الديكور، الإضاءة، الكوشة</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="flex-1 bg-primary text-white py-3 rounded-lg">احجز الآن</button>
+                                    <button class="flex-1 border border-primary text-primary py-3 rounded-lg">أضف للمفضلة</button>
+                                </div>
+                            </div>
+                        `
+                    },
+                    catering: {
+                        title: 'مطعم الأطايب الملكية',
+                        content: `
+                            <div class="space-y-4">
+                                <img src="مطعم الأطايب الملكية.png" alt="خدمات الطعام" class="w-full h-48 object-cover rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-bold mb-2">القائمة:</h4>
+                                        <ul class="space-y-1 text-sm">
+                                            <li>✓ مقبلات متنوعة</li>
+                                            <li>✓ أطباق رئيسية</li>
+                                            <li>✓ حلويات فاخرة</li>
+                                            <li>✓ مشروبات باردة وساخنة</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold mb-2">الأسعار:</h4>
+                                        <p class="text-2xl font-bold text-secondary mb-2">400,000 دج</p>
+                                        <p class="text-sm text-gray-600">لـ 300 ضيف شامل السرفورات</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="flex-1 bg-secondary text-white py-3 rounded-lg">احجز الآن</button>
+                                    <button class="flex-1 border border-secondary text-secondary py-3 rounded-lg">أضف للمفضلة</button>
+                                </div>
+                            </div>
+                        `
+                    },
+                    beauty: {
+                        title: 'صالون الجمال الملكي',
+                        content: `
+                            <div class="space-y-4">
+                                <img src="صالون الجمال الملكي.png" alt="خدمات الجمال" class="w-full h-48 object-cover rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-bold mb-2">الخدمات:</h4>
+                                        <ul class="space-y-1 text-sm">
+                                            <li>✓ ماكياج عروس احترافي</li>
+                                            <li>✓ تسريحة شعر</li>
+                                            <li>✓ مناكير وأظافر</li>
+                                            <li>✓ عناية بالبشرة</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold mb-2">الأسعار:</h4>
+                                        <p class="text-2xl font-bold text-primary mb-2">120,000 دج</p>
+                                        <p class="text-sm text-gray-600">باقة العروس الكاملة</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="flex-1 bg-primary text-white py-3 rounded-lg">احجز الآن</button>
+                                    <button class="flex-1 border border-primary text-primary py-3 rounded-lg">أضف للمفضلة</button>
+                                </div>
+                            </div>
+                        `
+                    },
+                    photography: {
+                        title: 'استوديو فوتوغرافيا الأحلام',
+                        content: `
+                            <div class="space-y-4">
+                                <img src="https://via.placeholder.com/600x300/EE4B4E/ffffff?text=التصوير+والفيديو" alt="التصوير والفيديو" class="w-full h-48 object-cover rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-bold mb-2">الباقة:</h4>
+                                        <ul class="space-y-1 text-sm">
+                                            <li>✓ تصوير فوتوغرافي احترافي</li>
+                                            <li>✓ فيديو 4K</li>
+                                            <li>✓ طائرة درون</li>
+                                            <li>✓ ألبوم رقمي</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold mb-2">الأسعار:</h4>
+                                        <p class="text-2xl font-bold text-secondary mb-2">200,000 دج</p>
+                                        <p class="text-sm text-gray-600">تصوير كامل للحفل</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="flex-1 bg-secondary text-white py-3 rounded-lg">احجز الآن</button>
+                                    <button class="flex-1 border border-secondary text-secondary py-3 rounded-lg">أضف للمفضلة</button>
+                                </div>
+                            </div>
+                        `
+                    },
+                    decoration: {
+                        title: 'ديكورات الأحلام الساحرة',
+                        content: `
+                            <div class="space-y-4">
+                                <img src="https://via.placeholder.com/600x300/87D8C3/ffffff?text=الديكور+والزهور" alt="الديكور والزهور" class="w-full h-48 object-cover rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-bold mb-2">الخدمات:</h4>
+                                        <ul class="space-y-1 text-sm">
+                                            <li>✓ ديكورات القاعة</li>
+                                            <li>✓ زهور طبيعية</li>
+                                            <li>✓ إضاءة ملونة</li>
+                                            <li>✓ كوشة الزفاف</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold mb-2">الأسعار:</h4>
+                                        <p class="text-2xl font-bold text-primary mb-2">300,000 دج</p>
+                                        <p class="text-sm text-gray-600">ديكور كامل للقاعة</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="flex-1 bg-primary text-white py-3 rounded-lg">احجز الآن</button>
+                                    <button class="flex-1 border border-primary text-primary py-3 rounded-lg">أضف للمفضلة</button>
+                                </div>
+                            </div>
+                        `
+                    },
+                    jewelry: {
+                        title: 'مجوهرات الألماس الملكي',
+                        content: `
+                            <div class="space-y-4">
+                                <img src="https://via.placeholder.com/600x300/EE4B4E/ffffff?text=المجوهرات" alt="المجوهرات" class="w-full h-48 object-cover rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-bold mb-2">المجموعة:</h4>
+                                        <ul class="space-y-1 text-sm">
+                                            <li>✓ خاتم الزواج</li>
+                                            <li>✓ طقم مجوهرات</li>
+                                            <li>✓ إكسسوارات الشعر</li>
+                                            <li>✓ شهادة أمانة</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold mb-2">الأسعار:</h4>
+                                        <p class="text-2xl font-bold text-secondary mb-2">500,000 دج</p>
+                                        <p class="text-sm text-gray-600">طقم كامل للعروس</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="flex-1 bg-secondary text-white py-3 rounded-lg">احجز الآن</button>
+                                    <button class="flex-1 border border-secondary text-secondary py-3 rounded-lg">أضف للمفضلة</button>
+                                </div>
+                            </div>
+                        `
+                    }
+                };
+
+                modalTitle.textContent = serviceData[serviceType].title;
+                modalContent.innerHTML = serviceData[serviceType].content;
+                serviceModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Close modal
+            closeModal.addEventListener('click', function() {
+                serviceModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close modal when clicking outside
+            serviceModal.addEventListener('click', function(e) {
+                if (e.target === serviceModal) {
+                    serviceModal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Animate cards on scroll
+            const cardObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            translateY: [30, 0],
+                            opacity: [0, 1],
+                            duration: 600,
+                            delay: (index % 3) * 100,
+                            easing: 'easeOutQuart'
+                        });
+                        cardObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            serviceCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                cardObserver.observe(card);
+            });
+
+            // Card hover effects
+            serviceCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    anime({
+                        targets: this.querySelector('i'),
+                        scale: 1.1,
+                        rotate: '5deg',
+                        duration: 300,
+                        easing: 'easeOutQuart'
+                    });
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    anime({
+                        targets: this.querySelector('i'),
+                        scale: 1,
+                        rotate: '0deg',
+                        duration: 300,
+                        easing: 'easeOutQuart'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>البحث - Wed in Click</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#87D8C3',
+                        secondary: '#EE4B4E',
+                        dark: '#1a1a1a',
+                        'dark-light': '#2d2d2d',
+                        'dark-lighter': '#3d3d3d'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #87D8C3 0%, #EE4B4E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .search-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .search-card {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(135, 216, 195, 0.3);
+        }
+        .search-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .dark .search-card:hover {
+            box-shadow: 0 10px 30px rgba(135, 216, 195, 0.2);
+        }
+        .filter-sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        .dark .filter-sidebar {
+            background: rgba(45, 45, 45, 0.8);
+        }
+        .price-range {
+            background: linear-gradient(135deg, #87D8C3 0%, #EE4B4E 100%);
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(135, 216, 195, 0.1) 0%, rgba(238, 75, 78, 0.1) 100%);
+        }
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        .mobile-filters {
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-filters.active {
+            transform: translateY(0);
+        }
+        @media (max-width: 768px) {
+            .filter-sidebar {
+                display: none;
+            }
+            .mobile-filters {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-dark text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/95 dark:bg-dark/95 backdrop-blur-md z-50 border-b border-primary/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="flex items-center group">
+                        <div class="relative">
+                            <img src="logo.jpg" alt="Wed in Click" class="h-14 w-auto transition-transform duration-300 group-hover:scale-110 filter brightness-100 group-hover:brightness-110">
+                            <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-20 rounded-lg transition-opacity duration-300"></div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link hover:text-primary transition-colors">الرئيسية</a>
+                    <a href="services.html" class="nav-link hover:text-primary transition-colors">الخدمات</a>
+                    <a href="search.html" class="nav-link text-primary">البحث</a>
+                    <a href="index.html#about" class="nav-link hover:text-primary transition-colors">عن المنصة</a>
+                    <a href="index.html#contact" class="nav-link hover:text-primary transition-colors">اتصل بنا</a>
+                </div>
+
+                <!-- Desktop Controls -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="language-selector flex space-x-2">
+                        <button class="lang-btn active px-2 py-1 rounded text-sm bg-primary text-white" data-lang="ar">AR</button>
+                        <button class="lang-btn px-2 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="fr">FR</button>
+                        <button class="lang-btn px-2 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="en">EN</button>
+                    </div>
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-dark-lighter hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
+                        تسجيل الدخول
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-64 h-full bg-white dark:bg-dark-light shadow-lg z-40 md:hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold">القائمة</h3>
+                    <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="space-y-3 mb-6">
+                    <a href="index.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-home ml-3"></i>الرئيسية
+                    </a>
+                    <a href="services.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-concierge-bell ml-3"></i>الخدمات
+                    </a>
+                    <a href="search.html" class="block px-4 py-3 rounded-lg bg-primary text-white">
+                        <i class="fas fa-search ml-3"></i>البحث
+                    </a>
+                    <a href="index.html#about" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-info-circle ml-3"></i>عن المنصة
+                    </a>
+                    <a href="index.html#contact" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-phone ml-3"></i>اتصل بنا
+                    </a>
+                </nav>
+
+                <!-- Mobile Language Selector -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <p class="text-sm font-semibold mb-3">اللغة</p>
+                    <div class="flex space-x-2">
+                        <button class="lang-btn active px-3 py-2 rounded text-sm bg-primary text-white flex-1" data-lang="ar">AR</button>
+                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="fr">FR</button>
+                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="en">EN</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Dark Mode Toggle -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-semibold">الوضع المظلم</span>
+                        <button id="mobileDarkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Login Button -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <button class="w-full bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
+                        تسجيل الدخول
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">ابحثي عن خدمات زفافك</h1>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    استخدمي فلاترنا المتقدمة للعثور على الخدمة المثالية لزفافك في الجزائر
+                </p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="max-w-4xl mx-auto">
+                <div class="relative">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="ابحثي عن قاعة أفراح، مصور، طباخ..." 
+                           class="w-full px-6 py-4 pr-12 text-lg rounded-2xl bg-white dark:bg-dark-light border-2 border-gray-200 dark:border-gray-700 focus:border-primary focus:outline-none transition-colors">
+                    <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- Mobile Filter Toggle -->
+            <div class="md:hidden mt-4">
+                <button id="mobileFilterToggle" class="w-full bg-primary text-white px-6 py-3 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-filter ml-2"></i>
+                    فلاتر البحث
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                
+                <!-- Desktop Filters Sidebar -->
+                <div class="hidden lg:block lg:w-1/4">
+                    <div class="filter-sidebar rounded-2xl p-6 sticky top-24">
+                        <h3 class="text-xl font-bold mb-6">فلاتر البحث</h3>
+                        
+                        <!-- Wilaya Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3">الولاية</label>
+                            <select id="wilayaSelect" class="w-full px-4 py-3 rounded-lg bg-white dark:bg-dark-light border border-gray-300 dark:border-gray-600 focus:border-primary focus:outline-none">
+                                <option value="">جميع الولايات</option>
+                                <option value="algiers">الجزائر العاصمة</option>
+                                <option value="oran">وهران</option>
+                                <option value="constantine">قسنطينة</option>
+                                <option value="annaba">عنابة</option>
+                                <option value="blida">البليدة</option>
+                                <option value="setif">سطيف</option>
+                                <option value="tiaret">تيارت</option>
+                                <option value="bejaia">بجاية</option>
+                            </select>
+                        </div>
+
+                        <!-- Service Type Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3">نوع الخدمة</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="service-filter" value="venues" checked>
+                                    <span class="mr-2 text-sm">قاعات الأفراح</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="service-filter" value="catering" checked>
+                                    <span class="mr-2 text-sm">الطباخ والسيرفورات</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="service-filter" value="beauty" checked>
+                                    <span class="mr-2 text-sm">الحلاقات والمناكير</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="service-filter" value="photography" checked>
+                                    <span class="mr-2 text-sm">التصوير والفيديو</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="service-filter" value="decoration" checked>
+                                    <span class="mr-2 text-sm">الديكور والزهور</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="service-filter" value="jewelry" checked>
+                                    <span class="mr-2 text-sm">المجوهرات</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3">نطاق السعر</label>
+                            <div class="px-2">
+                                <input type="range" id="priceRange" min="0" max="1000000" value="500000" class="w-full h-2 price-range rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-sm text-gray-500 mt-2">
+                                    <span>0 دج</span>
+                                    <span id="priceValue">500,000 دج</span>
+                                    <span>1,000,000 دج</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3">التقييم</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="rating" value="5" class="rating-filter">
+                                    <span class="mr-2 flex items-center text-sm">
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <span class="mr-1">5 نجوم</span>
+                                    </span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="rating" value="4" class="rating-filter">
+                                    <span class="mr-2 flex items-center text-sm">
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="far fa-star text-yellow-400"></i>
+                                        <span class="mr-1">4 نجوم فما فوق</span>
+                                    </span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="rating" value="3" class="rating-filter">
+                                    <span class="mr-2 flex items-center text-sm">
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="far fa-star text-yellow-400"></i>
+                                        <i class="far fa-star text-yellow-400"></i>
+                                        <span class="mr-1">3 نجوم فما فوق</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Clear Filters -->
+                        <button id="clearFilters" class="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                            مسح جميع الفلاتر
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Filters Modal -->
+                <div id="mobileFilters" class="mobile-filters fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden">
+                    <div class="bg-white dark:bg-dark-light rounded-t-2xl p-6 max-h-96 overflow-y-auto">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold">فلاتر البحث</h3>
+                            <button id="closeMobileFilters" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Mobile Wilaya Filter -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2">الولاية</label>
+                            <select id="mobileWilayaSelect" class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-primary focus:outline-none">
+                                <option value="">جميع الولايات</option>
+                                <option value="algiers">الجزائر العاصمة</option>
+                                <option value="oran">وهران</option>
+                                <option value="constantine">قسنطينة</option>
+                                <option value="annaba">عنابة</option>
+                                <option value="blida">البليدة</option>
+                                <option value="setif">سطيف</option>
+                                <option value="tiaret">تيارت</option>
+                                <option value="bejaia">بجاية</option>
+                            </select>
+                        </div>
+
+                        <!-- Mobile Service Type Filter -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2">نوع الخدمة</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mobile-service-filter" value="venues" checked>
+                                    <span class="mr-2 text-xs">القاعات</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mobile-service-filter" value="catering" checked>
+                                    <span class="mr-2 text-xs">الطعام</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mobile-service-filter" value="beauty" checked>
+                                    <span class="mr-2 text-xs">الجمال</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mobile-service-filter" value="photography" checked>
+                                    <span class="mr-2 text-xs">التصوير</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mobile-service-filter" value="decoration" checked>
+                                    <span class="mr-2 text-xs">الديكور</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mobile-service-filter" value="jewelry" checked>
+                                    <span class="mr-2 text-xs">المجوهرات</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Price Range -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2">نطاق السعر</label>
+                            <input type="range" id="mobilePriceRange" min="0" max="1000000" value="500000" class="w-full h-2 price-range rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>0 دج</span>
+                                <span id="mobilePriceValue">500,000 دج</span>
+                                <span>1,000,000 دج</span>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Clear Filters -->
+                        <button id="mobileClearFilters" class="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                            مسح الفلاتر
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="lg:w-3/4 w-full">
+                    <!-- Results Header -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold">نتائج البحث</h2>
+                            <p class="text-gray-600 dark:text-gray-400">تم العثور على <span id="resultsCount">24</span> خدمة</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <select id="sortBy" class="px-4 py-2 rounded-lg bg-white dark:bg-dark-light border border-gray-300 dark:border-gray-600 focus:border-primary focus:outline-none text-sm">
+                                <option value="relevance">الأكثر تطابقاً</option>
+                                <option value="price-low">السعر: من الأقل للأعلى</option>
+                                <option value="price-high">السعر: من الأعلى للأقل</option>
+                                <option value="rating">الأعلى تقييماً</option>
+                                <option value="newest">الأحدث</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Results Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6" id="resultsGrid">
+                        
+                        <!-- Sample Result Card 1 -->
+                        <div class="search-card rounded-2xl p-6">
+                            <div class="relative mb-4">
+                                <div class="w-full h-40 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-building text-4xl text-primary"></i>
+                                </div>
+                                <div class="absolute top-3 left-3 bg-secondary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    مميز
+                                </div>
+                                <div class="absolute top-3 right-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                                    الجزائر العاصمة
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">قاعة الأفراح الذهبية</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">قاعة فاخرة بسعة 500 ضيف مع ديكورات حديثة</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-users text-primary text-sm"></i>
+                                    <span class="text-sm">500 ضيف</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm">4.8</span>
+                                    <span class="text-xs text-gray-500">(127)</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-primary">750,000 دج</span>
+                                <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                                    عرض التفاصيل
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sample Result Card 2 -->
+                        <div class="search-card rounded-2xl p-6">
+                            <div class="relative mb-4">
+                                <div class="w-full h-40 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-camera text-4xl text-secondary"></i>
+                                </div>
+                                <div class="absolute top-3 left-3 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    احترافي
+                                </div>
+                                <div class="absolute top-3 right-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                                    وهران
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">استوديو فوتوغرافيا الأحلام</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">تصوير زفاف احترافي مع فيديو 4K</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-video text-secondary text-sm"></i>
+                                    <span class="text-sm">فيديو 4K</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm">4.9</span>
+                                    <span class="text-xs text-gray-500">(89)</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-secondary">200,000 دج</span>
+                                <button class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                                    عرض التفاصيل
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sample Result Card 3 -->
+                        <div class="search-card rounded-2xl p-6">
+                            <div class="relative mb-4">
+                                <div class="w-full h-40 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-palette text-4xl text-primary"></i>
+                                </div>
+                                <div class="absolute top-3 left-3 bg-secondary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    مبدع
+                                </div>
+                                <div class="absolute top-3 right-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                                    قسنطينة
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">صالون الجمال الملكي</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">ماكياج عروس احترافي مع تسريحة شعر</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-magic text-primary text-sm"></i>
+                                    <span class="text-sm">خبراء متخصصون</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm">4.7</span>
+                                    <span class="text-xs text-gray-500">(156)</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-primary">120,000 دج</span>
+                                <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                                    عرض التفاصيل
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sample Result Card 4 -->
+                        <div class="search-card rounded-2xl p-6">
+                            <div class="relative mb-4">
+                                <div class="w-full h-40 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-utensils text-4xl text-secondary"></i>
+                                </div>
+                                <div class="absolute top-3 left-3 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    شهي
+                                </div>
+                                <div class="absolute top-3 right-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                                    عنابة
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">مطعم الأطايب الملكية</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">خدمات تقديم طعام لجميع أنواع الحفلات</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-utensils text-secondary text-sm"></i>
+                                    <span class="text-sm">أطباق متنوعة</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm">4.6</span>
+                                    <span class="text-xs text-gray-500">(203)</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-secondary">400,000 دج</span>
+                                <button class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                                    عرض التفاصيل
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sample Result Card 5 -->
+                        <div class="search-card rounded-2xl p-6">
+                            <div class="relative mb-4">
+                                <div class="w-full h-40 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-sparkles text-4xl text-primary"></i>
+                                </div>
+                                <div class="absolute top-3 left-3 bg-secondary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    ساحر
+                                </div>
+                                <div class="absolute top-3 right-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                                    البليدة
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">ديكورات الأحلام الساحرة</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">ديكورات زفاف فاخرة مع إضاءة ساحرة</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-flower text-primary text-sm"></i>
+                                    <span class="text-sm">ديكورات مبتكرة</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm">4.8</span>
+                                    <span class="text-xs text-gray-500">(94)</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-primary">300,000 دج</span>
+                                <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                                    عرض التفاصيل
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sample Result Card 6 -->
+                        <div class="search-card rounded-2xl p-6">
+                            <div class="relative mb-4">
+                                <div class="w-full h-40 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-gem text-4xl text-secondary"></i>
+                                </div>
+                                <div class="absolute top-3 left-3 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    فاخر
+                                </div>
+                                <div class="absolute top-3 right-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">
+                                    سطيف
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">مجوهرات الألماس الملكي</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">مجوهرات زفاف أصلية بتصاميم فاخرة</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-ring text-secondary text-sm"></i>
+                                    <span class="text-sm">ألماس أصلي</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm">4.9</span>
+                                    <span class="text-xs text-gray-500">(67)</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-secondary">500,000 دج</span>
+                                <button class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-sm">
+                                    عرض التفاصيل
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex justify-center mt-12">
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button class="px-4 py-2 rounded-lg bg-primary text-white">1</button>
+                            <button class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">2</button>
+                            <button class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">3</button>
+                            <button class="px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark dark:bg-dark-light text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="index.html" class="inline-block mb-4 group">
+                        <img src="logo.jpg" alt="Wed in Click" class="h-14 w-auto transition-transform duration-300 group-hover:scale-110 filter brightness-100 group-hover:brightness-125 drop-shadow-lg">
+                    </a>
+                    <p class="text-gray-400 leading-relaxed">
+                        منصتك الشاملة لجميع خدمات الأعراس في الجزائر. نجعل من يومك الكبير حلمًا يتحقق.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">الخدمات</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">قاعات الأفراح</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الطعام والمشروبات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">التصوير والفيديو</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الديكور والزهور</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">للعرسان</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">إنشاء حساب</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">تصفح الخدمات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">مقارنة الأسعار</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الحجز والدفع</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">لمقدمي الخدمات</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">التسجيل كمزود</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">إدارة الحجوزات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الترويج</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الإحصائيات</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Wed in Click. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Search page specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const priceRange = document.getElementById('priceRange');
+            const mobilePriceRange = document.getElementById('mobilePriceRange');
+            const priceValue = document.getElementById('priceValue');
+            const mobilePriceValue = document.getElementById('mobilePriceValue');
+            const clearFilters = document.getElementById('clearFilters');
+            const mobileClearFilters = document.getElementById('mobileClearFilters');
+            const serviceFilters = document.querySelectorAll('.service-filter');
+            const mobileServiceFilters = document.querySelectorAll('.mobile-service-filter');
+            const ratingFilters = document.querySelectorAll('.rating-filter');
+            const sortBy = document.getElementById('sortBy');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const resultsCount = document.getElementById('resultsCount');
+
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
+
+            // Mobile filters
+            const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+            const mobileFilters = document.getElementById('mobileFilters');
+            const closeMobileFilters = document.getElementById('closeMobileFilters');
+
+            // Open mobile menu
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Close mobile menu
+            closeMobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close mobile menu when clicking outside
+            mobileMenu.addEventListener('click', function(e) {
+                if (e.target === mobileMenu) {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Mobile dark mode toggle
+            mobileDarkModeToggle.addEventListener('click', function() {
+                const html = document.documentElement;
+                html.classList.toggle('dark');
+                const theme = html.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+            });
+
+            // Close mobile menu when clicking on links
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+
+            // Mobile filters toggle
+            mobileFilterToggle.addEventListener('click', function() {
+                mobileFilters.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            closeMobileFilters.addEventListener('click', function() {
+                mobileFilters.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            mobileFilters.addEventListener('click', function(e) {
+                if (e.target === mobileFilters) {
+                    mobileFilters.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Price range sliders
+            function updatePriceValue(range, valueElement) {
+                const value = parseInt(range.value);
+                valueElement.textContent = value.toLocaleString('ar-DZ') + ' دج';
+            }
+
+            priceRange.addEventListener('input', function() {
+                updatePriceValue(this, priceValue);
+                filterResults();
+            });
+
+            mobilePriceRange.addEventListener('input', function() {
+                updatePriceValue(this, mobilePriceValue);
+                filterResults();
+            });
+
+            // Search input
+            searchInput.addEventListener('input', debounce(filterResults, 300));
+
+            // Filter checkboxes and radio buttons
+            serviceFilters.forEach(filter => {
+                filter.addEventListener('change', filterResults);
+            });
+
+            mobileServiceFilters.forEach(filter => {
+                filter.addEventListener('change', filterResults);
+            });
+
+            ratingFilters.forEach(filter => {
+                filter.addEventListener('change', filterResults);
+            });
+
+            // Sort dropdown
+            sortBy.addEventListener('change', filterResults);
+
+            // Clear filters
+            clearFilters.addEventListener('click', function() {
+                searchInput.value = '';
+                priceRange.value = 500000;
+                priceValue.textContent = '500,000 دج';
+                serviceFilters.forEach(filter => filter.checked = true);
+                ratingFilters.forEach(filter => filter.checked = false);
+                sortBy.value = 'relevance';
+                filterResults();
+            });
+
+            mobileClearFilters.addEventListener('click', function() {
+                searchInput.value = '';
+                mobilePriceRange.value = 500000;
+                mobilePriceValue.textContent = '500,000 دج';
+                mobileServiceFilters.forEach(filter => filter.checked = true);
+                sortBy.value = 'relevance';
+                filterResults();
+                mobileFilters.classList.remove('active');
+            });
+
+            // Filter function
+            function filterResults() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const maxPrice = parseInt(priceRange.value);
+                const selectedServices = Array.from(serviceFilters)
+                    .filter(filter => filter.checked)
+                    .map(filter => filter.value);
+                const selectedRating = Array.from(ratingFilters)
+                    .find(filter => filter.checked)?.value;
+                const sortOption = sortBy.value;
+
+                // This is where you would normally make an API call
+                // For demo purposes, we'll just show a notification
+                console.log('Filtering results:', {
+                    searchTerm,
+                    maxPrice,
+                    selectedServices,
+                    selectedRating,
+                    sortOption
+                });
+
+                // Animate results
+                const cards = resultsGrid.querySelectorAll('.search-card');
+                anime({
+                    targets: cards,
+                    opacity: [1, 0.5, 1],
+                    duration: 600,
+                    easing: 'easeInOutQuart'
+                });
+
+                // Update results count (simulate)
+                const randomCount = Math.floor(Math.random() * 50) + 10;
+                resultsCount.textContent = randomCount;
+            }
+
+            // Animate cards on load
+            const cards = resultsGrid.querySelectorAll('.search-card');
+            const cardObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            translateY: [30, 0],
+                            opacity: [0, 1],
+                            duration: 600,
+                            delay: (index % 3) * 100,
+                            easing: 'easeOutQuart'
+                        });
+                        cardObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                cardObserver.observe(card);
+            });
+
+            // Card hover effects
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    anime({
+                        targets: this,
+                        scale: 1.02,
+                        duration: 300,
+                        easing: 'easeOutQuart'
+                    });
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    anime({
+                        targets: this,
+                        scale: 1,
+                        duration: 300,
+                        easing: 'easeOutQuart'
+                    });
+                });
+            });
+
+            // Button click handlers
+            const detailButtons = document.querySelectorAll('button:contains("عرض التفاصيل")');
+            detailButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    showNotification('سيتم فتح صفحة التفاصيل قريباً!', 'info');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

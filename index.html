@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        // Redirect first-time visitors to welcome page
+        try {
+            if (!localStorage.getItem('seenWelcome') && !location.pathname.endsWith('welcome.html')) {
+                window.location.href = 'welcome.html';
+            }
+        } catch(e) {}
+    </script>
+    <title>Wed in Click - منصة تنظيم الأعراس في الجزائر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#87D8C3',
+                        secondary: '#EE4B4E',
+                        dark: '#1a1a1a',
+                        'dark-light': '#2d2d2d',
+                        'dark-lighter': '#3d3d3d'
+                    },
+                    fontFamily: {
+                        'arabic': ['Cairo', 'sans-serif'],
+                        'french': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #87D8C3 0%, #EE4B4E 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #87D8C3 0%, #EE4B4E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .dark .card-hover:hover {
+            box-shadow: 0 20px 40px rgba(135, 216, 195, 0.2);
+        }
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .service-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .service-card {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(135, 216, 195, 0.3);
+        }
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(135, 216, 195, 0.1) 0%, rgba(238, 75, 78, 0.1) 100%);
+        }
+        .splide__slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stats-counter {
+            font-variant-numeric: tabular-nums;
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(135, 216, 195, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(135, 216, 195, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(135, 216, 195, 0); }
+        }
+        .shimmer {
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            .service-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-dark text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/95 dark:bg-dark/95 backdrop-blur-md z-50 border-b border-primary/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="#home" class="flex items-center group">
+                        <div class="relative">
+                            <img src="logo.jpg" alt="Wed in Click" class="h-14 w-auto transition-transform duration-300 group-hover:scale-110 filter brightness-100 group-hover:brightness-110">
+                            <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-20 rounded-lg transition-opacity duration-300"></div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="nav-link hover:text-primary transition-colors">الرئيسية</a>
+                    <a href="services.html" class="nav-link hover:text-primary transition-colors">الخدمات</a>
+                    <a href="search.html" class="nav-link hover:text-primary transition-colors">البحث</a>
+                    <a href="bookings.html" class="nav-link hover:text-primary transition-colors">حجوزاتي</a>
+                    <a href="#about" class="nav-link hover:text-primary transition-colors">عن المنصة</a>
+                    <a href="#contact" class="nav-link hover:text-primary transition-colors">اتصل بنا</a>
+                </div>
+
+                <!-- Desktop Controls -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="language-selector flex space-x-2">
+                        <button class="lang-btn active px-2 py-1 rounded text-sm bg-primary text-white" data-lang="ar">AR</button>
+                        <button class="lang-btn px-2 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="fr">FR</button>
+                        <button class="lang-btn px-2 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="en">EN</button>
+                    </div>
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-dark-lighter hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    <button class="auth-guest bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors" onclick="window.location.href='welcome.html'">
+                        تسجيل الدخول
+                    </button>
+                    <button class="auth-user hidden profile-btn flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                        <i class="fas fa-user"></i>
+                        <span class="auth-username">المستخدم</span>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-64 h-full bg-white dark:bg-dark-light shadow-lg z-40 md:hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold">القائمة</h3>
+                    <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="space-y-3 mb-6">
+                    <a href="#home" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-home ml-3"></i>الرئيسية
+                    </a>
+                    <a href="services.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-concierge-bell ml-3"></i>الخدمات
+                    </a>
+                    <a href="search.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-search ml-3"></i>البحث
+                    </a>
+                    <a href="bookings.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-calendar-check ml-3"></i>حجوزاتي
+                    </a>
+                    <a href="#about" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-info-circle ml-3"></i>عن المنصة
+                    </a>
+                    <a href="#contact" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-phone ml-3"></i>اتصل بنا
+                    </a>
+                </nav>
+
+                <!-- Mobile Language Selector -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <p class="text-sm font-semibold mb-3">اللغة</p>
+                    <div class="flex space-x-2">
+                        <button class="lang-btn active px-3 py-2 rounded text-sm bg-primary text-white flex-1" data-lang="ar">AR</button>
+                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="fr">FR</button>
+                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="en">EN</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Dark Mode Toggle -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-semibold">الوضع المظلم</span>
+                        <button id="mobileDarkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Login Button -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <button class="auth-guest w-full bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors" onclick="window.location.href='welcome.html'">
+                        تسجيل الدخول
+                    </button>
+                    <button class="auth-user hidden w-full profile-btn bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
+                        <i class="fas fa-user ml-2"></i><span class="auth-username">المستخدم</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg pt-16 pb-12 min-h-screen flex items-center justify-center overflow-hidden relative">
+        <div class="absolute inset-0 hero-gradient opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20"></div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full floating-animation"></div>
+        <div class="absolute bottom-20 right-10 w-32 h-32 bg-secondary/20 rounded-full floating-animation" style="animation-delay: -2s;"></div>
+        <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-primary/30 rounded-full floating-animation" style="animation-delay: -4s;"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-8">
+                <h1 class="hero-title text-4xl md:text-6xl font-bold mb-6">
+                    <span class="text-gradient">Wed in Click</span>
+                </h1>
+                <div class="hero-subtitle text-lg md:text-2xl text-gray-700 dark:text-gray-300 mb-8">
+                    <span id="typed-text"></span>
+                </div>
+                <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed" data-i18n="main_tagline">
+                    منصتك الشاملة لجميع خدمات الأعراس في الجزائر
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                <button class="bg-primary text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300 shadow-lg w-full sm:w-auto pulse-ring" onclick="showNotification('جاري التحويل...', 'info'); setTimeout(()=>window.location.href='services.html', 500);" data-i18n="start_now">
+                    ابدأ رحلتك الآن
+                </button>
+                <button class="border-2 border-primary text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-primary hover:text-white transition-all duration-300 w-full sm:w-auto" onclick="window.location.href='services.html';" data-i18n="browse_services">
+                    تصفح الخدمات
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="text-center">
+                    <div class="stats-counter text-2xl md:text-3xl font-bold text-primary mb-2" data-count="1500">0</div>
+                    <div class="text-sm md:text-base text-gray-600 dark:text-gray-400" data-i18n="venue">قاعة أفراح</div>
+                </div>
+                <div class="text-center">
+                    <div class="stats-counter text-2xl md:text-3xl font-bold text-secondary mb-2" data-count="800">0</div>
+                    <div class="text-sm md:text-base text-gray-600 dark:text-gray-400" data-i18n="photographer">مصور محترف</div>
+                </div>
+                <div class="text-center">
+                    <div class="stats-counter text-2xl md:text-3xl font-bold text-primary mb-2" data-count="1200">0</div>
+                    <div class="text-sm md:text-base text-gray-600 dark:text-gray-400" data-i18n="catering">مقدم خدمة</div>
+                </div>
+                <div class="text-center">
+                    <div class="stats-counter text-2xl md:text-3xl font-bold text-secondary mb-2" data-count="5000">0</div>
+                    <div class="text-sm md:text-base text-gray-600 dark:text-gray-400" data-i18n="decoration">عروس سعيدة</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-white dark:bg-dark-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gradient">جميع خدمات زفافك في مكان واحد</h2>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    كل ما تحتاجينه ليومك الكبير في مكان واحد. من القاعات إلى التصوير، من الماكياج إلى الكيكة.
+                </p>
+            </div>
+
+            <div class="service-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <!-- Wedding Halls -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-building text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">قاعات الأفراح</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">أفخم القاعات في كل الولايات، بأسعار منافسة وجودة عالية</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-primary">من 500K دج</span>
+                    </div>
+                    <button class="text-primary hover:text-secondary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Catering -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-utensils text-2xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">الطباخ والسيرفورات</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">أشهى المأكولات الجزائرية والعالمية لضيوفك الكرام</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-secondary">من 300K دج</span>
+                    </div>
+                    <button class="text-secondary hover:text-primary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Beauty Services -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-palette text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">الحلاقات والمناكير</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">أحدث صيحات الماكياج وتسريحات الشعر لعروس مميزة</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-primary">من 80K دج</span>
+                    </div>
+                    <button class="text-primary hover:text-secondary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Photography -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-camera text-2xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">التصوير والفيديو</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">احتفظي بأجمل لحظاتك مع مصورين محترفين</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-secondary">من 150K دج</span>
+                    </div>
+                    <button class="text-secondary hover:text-primary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Decoration -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-sparkles text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">الديكور والزهور</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">ديكورات مبتكرة وإضاءة ساحرة لتومان يومك الخاص</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-primary">من 200K دج</span>
+                    </div>
+                    <button class="text-primary hover:text-secondary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Jewelry -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-gem text-2xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">المجوهرات</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">أرقى المجوهرات والإكسسوارات لتكملي إطلالتك</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-secondary">من 100K دج</span>
+                    </div>
+                    <button class="text-secondary hover:text-primary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Wedding Dresses -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tshirt text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">فساتين الزفاف</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">أجمل فساتين الزفاف والأزياء التقليدية</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-primary">من 250K دج</span>
+                    </div>
+                    <button class="text-primary hover:text-secondary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Wedding Cake -->
+                <div class="service-card card-hover rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-birthday-cake text-2xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-3">كيك الزفاف</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">أشهى كيكات الزفاف بتصاميم مبتكرة ونكهات متنوعة</p>
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-secondary">من 50K دج</span>
+                    </div>
+                    <button class="text-secondary hover:text-primary transition-colors text-sm">
+                        عرض التفاصيل <i class="fas fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="services.html" class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300 inline-block">
+                    عرض جميع الخدمات
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-gray-50 dark:bg-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gradient">لماذا تختارين Wed in Click؟</h2>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    نحن منصتك الموثوقة لجميع احتياجات زفافك في الجزائر
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-search text-3xl text-primary"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">بحث سهل ومبسط</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        ابحثي عن جميع خدمات زفافك حسب الولاية والميزانية والخدمة المطلوبة. كل ما تحتاجينه في مكان واحد.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-shield-alt text-3xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">جودة مضمونة</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        جميع مقدمي الخدمات معتمدين ومجربين. اقرأي تقييمات العملاء السابقين واختاري بثقة.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-credit-card text-3xl text-primary"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">حجز ودفع إلكتروني</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        احجزي جميع خدماتك وادفعي إلكترونيًا بأمان. نوفر لك خيارات دفع متعددة تناسب احتياجاتك.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-white dark:bg-dark-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gradient" data-i18n="testimonials">آراء العرائس</h2>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400">ماذا تقول العرائس السعيدات عن خدماتنا</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-8 border border-primary/20">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 italic">
+                        "تجربة رائعة حقاً! ساعدتني المنصة في العثور على جميع خدمات زفافي دون عناء. الفريق احترافي جداً ومميز."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">ف</div>
+                        <div class="ml-4">
+                            <p class="font-bold">فاطمة محمد</p>
+                            <p class="text-sm text-gray-500">الجزائر العاصمة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-8 border border-secondary/20">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 italic">
+                        "منصة ممتازة تجمع كل خدمات الزواج في مكان واحد. توفير الوقت والجهد وسهولة المقارنة بين الخيارات."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-white font-bold">ع</div>
+                        <div class="ml-4">
+                            <p class="font-bold">عائشة علي</p>
+                            <p class="text-sm text-gray-500">وهران</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-8 border border-primary/20">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 italic">
+                        "كانت الخدمة ممتازة والدعم الفني رائع. أنصح جميع الفتيات بـ Wed in Click لتنظيم أفراحهن."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">ل</div>
+                        <div class="ml-4">
+                            <p class="font-bold">ليلى حسن</p>
+                            <p class="text-sm text-gray-500">قسنطينة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-gray-50 dark:bg-dark">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gradient">الأسئلة الشائعة</h2>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400">إجابات على أكثر الأسئلة الشائعة حول Wed in Click</p>
+            </div>
+
+            <div class="space-y-4">
+                <details class="group bg-white dark:bg-dark-light rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                    <summary class="flex items-center justify-between cursor-pointer font-semibold text-lg">
+                        <span>كيف يمكنني البدء في البحث عن الخدمات؟</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                        يمكنك البدء بإنشاء حساب مجاني على الموقع، ثم استخدام أداة البحث المتقدمة للبحث عن الخدمات حسب نوعها والموقع والميزانية.
+                    </p>
+                </details>
+
+                <details class="group bg-white dark:bg-dark-light rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                    <summary class="flex items-center justify-between cursor-pointer font-semibold text-lg">
+                        <span>هل آمنة عمليات الدفع على الموقع؟</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                        نعم، جميع عمليات الدفع مشفرة وآمنة بالكامل. نستخدم تقنيات التشفير الحديثة لحماية بيانات المستخدمين.
+                    </p>
+                </details>
+
+                <details class="group bg-white dark:bg-dark-light rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                    <summary class="flex items-center justify-between cursor-pointer font-semibold text-lg">
+                        <span>كيف يمكنني إلغاء الحجز؟</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                        يمكنك إلغاء أي حجز من صفحة "حجوزاتي" في حسابك. يرجى ملاحظة سياسة الإلغاء الخاصة بكل خدمة.
+                    </p>
+                </details>
+
+                <details class="group bg-white dark:bg-dark-light rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                    <summary class="flex items-center justify-between cursor-pointer font-semibold text-lg">
+                        <span>هل يمكنني التواصل المباشر مع مقدم الخدمة؟</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                        نعم، يمكنك التواصل مع مقدم الخدمة مباشرة عبر رقم الهاتف والبريد الإلكتروني المتوفر في صفحة الخدمة.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="cta" class="py-20 hero-gradient relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-40 h-40 bg-white rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+            <div class="absolute top-0 right-0 w-40 h-40 bg-white rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"></div>
+        </div>
+
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">مستعدة لبدء رحلتك؟</h2>
+            <p class="text-lg md:text-xl text-white/95 mb-8 leading-relaxed">
+                انضمي إلى آلاف العرائس السعيدات اللواتي ثقن بـ <span class="font-bold">Wed in Click</span> لتنظيم زفاف أحلامهن. 
+                ابدأي الآن واجعلي من يومك الكبير ذكرى لا تُنسى.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button class="bg-white text-primary px-8 py-4 rounded-full text-lg font-bold hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300 shadow-xl cursor-pointer" onclick="window.location.href='welcome.html';">
+                    <i class="fas fa-user-plus ml-2"></i>إنشاء حساب مجاني
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white hover:text-primary transition-all duration-300 cursor-pointer" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'});">
+                    <i class="fas fa-chevron-down ml-2"></i>معرفة المزيد
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark dark:bg-dark-light text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="#home" class="inline-block mb-4 group">
+                        <img src="logo.jpg" alt="Wed in Click" class="h-14 w-auto transition-transform duration-300 group-hover:scale-110 filter brightness-100 group-hover:brightness-125 drop-shadow-lg">
+                    </a>
+                    <p class="text-gray-400 leading-relaxed">
+                        منصتك الشاملة لجميع خدمات الأعراس في الجزائر. نجعل من يومك الكبير حلمًا يتحقق.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">الخدمات</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">قاعات الأفراح</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الطعام والمشروبات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">التصوير والفيديو</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الديكور والزهور</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">للعرسان</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">إنشاء حساب</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">تصفح الخدمات</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">مقارنة الأسعار</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">الحجز والدفع</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">اتصل بنا</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center"><i class="fas fa-phone ml-3 text-primary"></i> +213 123 456 789</li>
+                        <li class="flex items-center"><i class="fas fa-envelope ml-3 text-primary"></i> <a href="mailto:info@wedinclick.com" class="hover:text-primary">info@wedinclick.com</a></li>
+                        <li class="flex items-center"><i class="fas fa-map-marker-alt ml-3 text-primary"></i> الجزائر العاصمة</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8">
+                <div class="flex flex-col md:flex-row items-center justify-between mb-8">
+                    <p class="text-gray-400">&copy; 2025 Wed in Click. جميع الحقوق محفوظة.</p>
+                    <div class="flex gap-4 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
+
+            // Open mobile menu
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Close mobile menu
+            closeMobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close mobile menu when clicking outside
+            mobileMenu.addEventListener('click', function(e) {
+                if (e.target === mobileMenu) {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Mobile dark mode toggle
+            mobileDarkModeToggle.addEventListener('click', function() {
+                const html = document.documentElement;
+                html.classList.toggle('dark');
+                const theme = html.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+            });
+
+            // Close mobile menu when clicking on links
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
