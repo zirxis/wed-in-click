@@ -66,10 +66,69 @@
         }
         .mobile-menu {
             transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .mobile-menu.active {
             transform: translateX(0);
+        }
+        .mobile-menu-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0);
+            z-index: 35;
+            transition: background 0.4s ease-in-out;
+            pointer-events: none;
+        }
+        .mobile-menu-backdrop.active {
+            background: rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+        }
+        .mobile-menu nav a {
+            position: relative;
+            overflow: hidden;
+        }
+        .mobile-menu nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(135, 216, 195, 0.1), rgba(238, 75, 78, 0.1));
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        .mobile-menu nav a:hover::before {
+            width: 100%;
+        }
+        .mobile-menu-header {
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-menu-content {
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .service-detail-modal {
             display: none;
@@ -147,63 +206,138 @@
             </div>
         </div>
 
+        <!-- Mobile Menu Backdrop -->
+        <div id="mobileMenuBackdrop" class="mobile-menu-backdrop md:hidden"></div>
+
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-64 h-full bg-white dark:bg-dark-light shadow-lg z-40 md:hidden">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold">القائمة</h3>
-                    <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
-                        <i class="fas fa-times"></i>
+        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-72 h-screen bg-white dark:bg-dark-light shadow-2xl z-40 md:hidden overflow-y-auto">
+            <div class="flex flex-col h-full">
+                <!-- Header with Animation -->
+                <div class="mobile-menu-header sticky top-0 bg-gradient-to-b from-white dark:from-dark-light to-gray-50 dark:to-dark-light border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gradient">القائمة</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Wed in Click</p>
+                    </div>
+                    <button id="closeMobileMenu" class="p-3 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 transform hover:scale-110 hover:rotate-90">
+                        <i class="fas fa-times text-lg"></i>
                     </button>
                 </div>
-                
-                <nav class="space-y-3 mb-6">
-                    <a href="index.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-home ml-3"></i>الرئيسية
+
+                <!-- Main Navigation with Stagger Animation -->
+                <nav class="flex-1 px-3 py-6 space-y-3 mobile-menu-content">
+                    <div class="px-2 py-2">
+                        <p class="text-xs font-bold text-gray-400 uppercase mb-3">القائمة الرئيسية</p>
+                    </div>
+                    <a href="index.html" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-2 group">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-all">
+                            <i class="fas fa-home text-blue-600 dark:text-blue-400 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                        <span class="font-semibold mr-3">الرئيسية</span>
                     </a>
-                    <a href="services.html" class="block px-4 py-3 rounded-lg bg-primary text-white">
-                        <i class="fas fa-concierge-bell ml-3"></i>الخدمات
+                    <a href="services.html" class="flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-lg mr-3">
+                            <i class="fas fa-concierge-bell"></i>
+                        </div>
+                        <span class="font-semibold">الخدمات</span>
                     </a>
-                    <a href="search.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-search ml-3"></i>البحث
+                    <a href="search.html" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-2 group">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 group-hover:bg-purple-200 dark:group-hover:bg-purple-800/50 transition-all">
+                            <i class="fas fa-search text-purple-600 dark:text-purple-400 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                        <span class="font-semibold mr-3">البحث</span>
                     </a>
-                    <a href="bookings.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-calendar-check ml-3"></i>حجوزاتي
+                    <a href="bookings.html" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-2 group">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 group-hover:bg-green-200 dark:group-hover:bg-green-800/50 transition-all">
+                            <i class="fas fa-calendar-check text-green-600 dark:text-green-400 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                        <span class="font-semibold mr-3">حجوزاتي</span>
+                        <span class="ml-auto bg-secondary text-white text-xs px-3 py-1 rounded-full font-bold animate-pulse">جديد</span>
                     </a>
-                    <a href="index.html#about" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-info-circle ml-3"></i>عن المنصة
+                    
+                    <div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+                    
+                    <div class="px-2 py-2">
+                        <p class="text-xs font-bold text-gray-400 uppercase mb-3">معلومات إضافية</p>
+                    </div>
+                    <a href="index.html#about" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-2 group">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/50 transition-all">
+                            <i class="fas fa-info-circle text-amber-600 dark:text-amber-400 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                        <span class="font-semibold mr-3">عن المنصة</span>
                     </a>
-                    <a href="index.html#contact" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-phone ml-3"></i>اتصل بنا
+                    <a href="index.html#contact" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-2 group">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/30 group-hover:bg-rose-200 dark:group-hover:bg-rose-800/50 transition-all">
+                            <i class="fas fa-phone text-rose-600 dark:text-rose-400 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                        <span class="font-semibold mr-3">اتصل بنا</span>
+						              
+                <div class="px-4 py-5 border-t border-gray-200 dark:border-gray-700">
+                    <button class="w-full bg-gradient-to-r from-primary to-secondary text-white px-4 py-3 rounded-xl hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-bold text-base flex items-center justify-center gap-2 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-right"></div>
+                        <i class="fas fa-sign-in-alt relative z-10"></i>
+                        <span class="relative z-10">تسجيل الدخول</span>
+                    </button>
+                </div>
+
                     </a>
+					                <!-- Dark Mode Toggle -->
+                <div class="px-4 py-5 border-t border-gray-200 dark:border-gray-700">
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-3 flex items-center gap-2">
+                        <i class="fas fa-palette text-primary"></i>المظهر
+                    </p>
+                    <button id="mobileDarkModeToggle" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 group">
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 dark:bg-gray-600 group-hover:bg-blue-200 dark:group-hover:bg-gray-500 transition-all">
+                                <i class="fas fa-moon dark:hidden text-blue-600"></i>
+                                <i class="fas fa-sun hidden dark:inline text-yellow-400"></i>
+                            </div>
+                            <span class="font-semibold text-sm"><span class="dark:hidden">🌞 الفاتح</span><span class="hidden dark:inline">🌙 المظلم</span></span>
+                        </div>
+                        <i class="fas fa-toggle-on text-primary text-xl group-hover:scale-110 transition-transform"></i>
+                    </button>
+                </div>
                 </nav>
 
-                <!-- Mobile Language Selector -->
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                    <p class="text-sm font-semibold mb-3">اللغة</p>
-                    <div class="flex space-x-2">
-                        <button class="lang-btn active px-3 py-2 rounded text-sm bg-primary text-white flex-1" data-lang="ar">AR</button>
-                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="fr">FR</button>
-                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="en">EN</button>
+                <!-- Divider -->
+                <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+
+                <!-- Language Selector -->
+                <div class="px-4 py-5">
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-3 flex items-center gap-2">
+                        <i class="fas fa-globe text-primary"></i>اختري اللغة
+                    </p>
+                    <div class="flex gap-2">
+                        <button class="lang-btn flex-1 px-3 py-2 rounded-lg text-sm font-bold bg-primary text-white transition-all active hover:shadow-md" data-lang="ar">العربية</button>
+                        <button class="lang-btn flex-1 px-3 py-2 rounded-lg text-sm font-bold border-2 border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-50 dark:hover:bg-gray-700 transition-all" data-lang="fr">Français</button>
+                        <button class="lang-btn flex-1 px-3 py-2 rounded-lg text-sm font-bold border-2 border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-50 dark:hover:bg-gray-700 transition-all" data-lang="en">English</button>
                     </div>
                 </div>
 
-                <!-- Mobile Dark Mode Toggle -->
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-semibold">الوضع المظلم</span>
-                        <button id="mobileDarkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700">
-                            <i class="fas fa-moon dark:hidden"></i>
-                            <i class="fas fa-sun hidden dark:inline"></i>
-                        </button>
+
+
+ 
+                <!-- Stats Section -->
+                <div class="px-4 py-5 border-t border-gray-200 dark:border-gray-700 bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-800/50">
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">الحجوزات</p>
+                            <p class="text-lg font-bold text-primary">5+</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">الخدمات</p>
+                            <p class="text-lg font-bold text-secondary">20+</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">التقييم</p>
+                            <p class="text-lg font-bold text-purple-600 dark:text-purple-400">4.8⭐</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Mobile Login Button -->
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-                    <button class="w-full bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
-                        تسجيل الدخول
-                    </button>
+                <!-- Footer Info -->
+                <div class="px-4 py-4 text-center border-t border-gray-200 dark:border-gray-700 mt-auto">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Wed in Click © 2025</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">منصة زفافك المتكاملة</p>
                 </div>
             </div>
         </div>
@@ -567,6 +701,7 @@
                 mobileMenuBtn.addEventListener('click', function() {
                     if (mobileMenu) {
                         mobileMenu.classList.add('active');
+                        mobileMenuBackdrop.classList.add('active');
                         document.body.style.overflow = 'hidden';
                     }
                 });
@@ -577,6 +712,19 @@
                 closeMobileMenu.addEventListener('click', function() {
                     if (mobileMenu) {
                         mobileMenu.classList.remove('active');
+                        mobileMenuBackdrop.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+
+            // Close mobile menu when clicking backdrop
+            const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+            if (mobileMenuBackdrop) {
+                mobileMenuBackdrop.addEventListener('click', function() {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        mobileMenuBackdrop.classList.remove('active');
                         document.body.style.overflow = 'auto';
                     }
                 });
@@ -587,20 +735,13 @@
                 mobileMenu.addEventListener('click', function(e) {
                     if (e.target === mobileMenu) {
                         mobileMenu.classList.remove('active');
+                        mobileMenuBackdrop.classList.remove('active');
                         document.body.style.overflow = 'auto';
                     }
                 });
             }
 
-            // Mobile dark mode toggle
-            if (mobileDarkModeToggle) {
-                mobileDarkModeToggle.addEventListener('click', function() {
-                    const html = document.documentElement;
-                    html.classList.toggle('dark');
-                    const theme = html.classList.contains('dark') ? 'dark' : 'light';
-                    localStorage.setItem('theme', theme);
-                });
-            }
+
 
             // Close mobile menu when clicking on links
             if (mobileMenu) {

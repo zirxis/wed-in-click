@@ -187,64 +187,96 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-64 h-full bg-white dark:bg-dark-light shadow-lg z-40 md:hidden">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold">القائمة</h3>
-                    <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
-                        <i class="fas fa-times"></i>
+        <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 w-72 h-screen bg-white dark:bg-dark-light shadow-2xl z-40 md:hidden overflow-y-auto">
+            <div class="flex flex-col h-full">
+                <!-- Header -->
+                <div class="sticky top-0 bg-white dark:bg-dark-light border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gradient">القائمة</h3>
+                    <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all transform hover:scale-110">
+                        <i class="fas fa-times text-lg"></i>
                     </button>
                 </div>
-                
-                <nav class="space-y-3 mb-6">
-                    <a href="#home" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-home ml-3"></i>الرئيسية
+
+                <!-- Main Navigation -->
+                <nav class="flex-1 px-3 py-4 space-y-2">
+                    <a href="#home" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-1 group">
+                        <i class="fas fa-home text-primary group-hover:scale-125 transition-transform ml-3"></i>
+                        <span class="font-semibold">الرئيسية</span>
                     </a>
-                    <a href="services.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-concierge-bell ml-3"></i>الخدمات
+                    <a href="services.html" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-1 group">
+                        <i class="fas fa-concierge-bell text-secondary group-hover:scale-125 transition-transform ml-3"></i>
+                        <span class="font-semibold">الخدمات</span>
                     </a>
-                    <a href="search.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-search ml-3"></i>البحث
+                    <a href="search.html" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-1 group">
+                        <i class="fas fa-search text-secondary group-hover:scale-125 transition-transform ml-3"></i>
+                        <span class="font-semibold">البحث</span>
                     </a>
-                    <a href="bookings.html" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-calendar-check ml-3"></i>حجوزاتي
+                    <a href="bookings.html" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-1 group">
+                        <i class="fas fa-calendar-check text-primary group-hover:scale-125 transition-transform ml-3"></i>
+                        <span class="font-semibold">حجوزاتي</span>
+                        <span class="mr-auto bg-secondary text-white text-xs px-2 py-1 rounded-full font-bold">جديد</span>
                     </a>
-                    <a href="#about" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-info-circle ml-3"></i>عن المنصة
+                    <div class="my-3 border-t border-gray-200 dark:border-gray-700"></div>
+                    <a href="#about" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-1 group">
+                        <i class="fas fa-info-circle text-primary group-hover:scale-125 transition-transform ml-3"></i>
+                        <span class="font-semibold">عن المنصة</span>
                     </a>
-                    <a href="#contact" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-phone ml-3"></i>اتصل بنا
+                    <a href="#contact" class="flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:translate-x-1 group">
+                        <i class="fas fa-phone text-secondary group-hover:scale-125 transition-transform ml-3"></i>
+                        <span class="font-semibold">اتصل بنا</span>
                     </a>
+					                <div class="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <button onclick="window.location.href='welcome.html'" class="w-full bg-gradient-to-r from-primary to-secondary text-white px-4 py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300 font-bold text-lg flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i>تسجيل الدخول
+                    </button>
+                </div>
+				                <!-- Dark Mode Toggle -->
+                <div class="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-3">المظهر</p>
+                    <button id="mobileDarkModeToggle" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-moon dark:hidden text-primary text-lg"></i>
+                            <i class="fas fa-sun hidden dark:inline text-yellow-400 text-lg"></i>
+                            <span class="font-semibold"><span class="dark:hidden">الوضع الفاتح</span><span class="hidden dark:inline">الوضع المظلم</span></span>
+                        </div>
+                        <i class="fas fa-toggle-on text-primary text-xl"></i>
+                    </button>
+                </div>
+
                 </nav>
 
-                <!-- Mobile Language Selector -->
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                    <p class="text-sm font-semibold mb-3">اللغة</p>
-                    <div class="flex space-x-2">
-                        <button class="lang-btn active px-3 py-2 rounded text-sm bg-primary text-white flex-1" data-lang="ar">AR</button>
-                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="fr">FR</button>
-                        <button class="lang-btn px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600 flex-1" data-lang="en">EN</button>
+                <!-- Divider -->
+                <div class="border-t border-gray-200 dark:border-gray-700"></div>
+
+                <!-- Language Selector -->
+                <div class="px-4 py-4">
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-3">اختري اللغة</p>
+                    <div class="flex gap-2">
+                        <button class="lang-btn flex-1 px-3 py-2 rounded-lg text-sm font-bold bg-primary text-white transition-all active" data-lang="ar">العربية</button>
+                        <button class="lang-btn flex-1 px-3 py-2 rounded-lg text-sm font-bold border-2 border-gray-300 dark:border-gray-600 hover:border-primary transition-all" data-lang="fr">Français</button>
+                        <button class="lang-btn flex-1 px-3 py-2 rounded-lg text-sm font-bold border-2 border-gray-300 dark:border-gray-600 hover:border-primary transition-all" data-lang="en">English</button>
                     </div>
                 </div>
 
-                <!-- Mobile Dark Mode Toggle -->
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-semibold">الوضع المظلم</span>
-                        <button id="mobileDarkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700">
-                            <i class="fas fa-moon dark:hidden"></i>
-                            <i class="fas fa-sun hidden dark:inline"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mobile Login Button -->
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-                    <button class="auth-guest w-full bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors" onclick="window.location.href='welcome.html'">
-                        تسجيل الدخول
+                <!-- Dark Mode Toggle -->
+                <div class="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-3">المظهر</p>
+                    <button id="mobileDarkModeToggle" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-moon dark:hidden text-primary text-lg"></i>
+                            <i class="fas fa-sun hidden dark:inline text-yellow-400 text-lg"></i>
+                            <span class="font-semibold"><span class="dark:hidden">الوضع الفاتح</span><span class="hidden dark:inline">الوضع المظلم</span></span>
+                        </div>
+                        <i class="fas fa-toggle-on text-primary text-xl"></i>
                     </button>
-                    <button class="auth-user hidden w-full profile-btn bg-primary text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
-                        <i class="fas fa-user ml-2"></i><span class="auth-username">المستخدم</span>
+                </div>
+
+                <!-- Footer Info -->
+                <div class="px-4 py-3 text-center text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
+                    <p>Wed in Click © 2025</p>
+                </div>
+            </div>
+        </div>
                     </button>
                 </div>
             </div>
@@ -734,15 +766,7 @@
                 });
             }
 
-            // Mobile dark mode toggle
-            if (mobileDarkModeToggle) {
-                mobileDarkModeToggle.addEventListener('click', function() {
-                    const html = document.documentElement;
-                    html.classList.toggle('dark');
-                    const theme = html.classList.contains('dark') ? 'dark' : 'light';
-                    localStorage.setItem('theme', theme);
-                });
-            }
+
 
             // Close mobile menu when clicking on links
             if (mobileMenu) {
